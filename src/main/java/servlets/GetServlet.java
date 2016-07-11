@@ -36,10 +36,13 @@ public class GetServlet extends BaseServlet{
         LOGGER.info(URI);
         HashMap<String, String> paramValHashMap = (HashMap<String, String>) ServletTools.getParamValueMap(URI);
         LOGGER.info("HashMap: " + paramValHashMap.toString());
-        UUID uuid = UUID.fromString(paramValHashMap.get("uuid"));
-        LOGGER.info("before getting value: " + this.service.getRepository().getRepository().toString());
-        LOGGER.info(this.service.getTaskInfo(uuid).toString());
-        PrintWriter printWriter = resp.getWriter();
-        printWriter.println(this.service.getTaskInfo(uuid).toString());
+        String stringUUID = paramValHashMap.get("uuid");
+        if(stringUUID != null) {
+            UUID uuid = UUID.fromString(stringUUID);
+            LOGGER.info(this.service.getTaskInfo(uuid).toString());
+            PrintWriter printWriter = resp.getWriter();
+            printWriter.println(this.service.getTaskInfo(uuid).toString());
+        }
+
     }
 }

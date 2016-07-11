@@ -7,6 +7,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.UUID;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 
@@ -28,6 +30,10 @@ public class DeleteServlet extends BaseServlet{
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
+        LOGGER.info("DELETE method invoked");
+        String URI = ServletTools.getFullURL(req);
+        HashMap<String, String> paramValHashMap = (HashMap<String, String>) ServletTools.getParamValueMap(URI);
+        UUID uuid = UUID.fromString(paramValHashMap.get("uuid"));
+        this.service.deleteTask(uuid);
     }
 }
