@@ -20,10 +20,17 @@ public class AddServlet extends BaseServlet {
     private static final String LOG_FILE = "E:/[AsynchJS]AddServletLOG.log";
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Tools.loggerInit(new FileHandler(), LOG_FILE, LOGGER);
-        LOGGER.info("ServiceSingleton:" + this.service.toString());
+    public void init() throws ServletException {
+        try {
+            Tools.loggerInit(new FileHandler(), LOG_FILE, LOGGER);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        LOGGER.info("ServiceSingleton:" + this.service.toString());
         LOGGER.info("POST method invoked");
         String URI = ServletTools.getFullURL(req);
         HashMap<String, String> paramValHashMap = (HashMap<String, String>) ServletTools.getParamValueMap(URI);
