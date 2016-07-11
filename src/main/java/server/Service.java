@@ -8,7 +8,6 @@ import tools.Tools;
 import javax.script.ScriptException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.*;
 import java.util.logging.FileHandler;
@@ -84,6 +83,10 @@ public class Service implements Listener{
         } catch (Exception e){
             LOGGER.info("task: " + uuid.toString() + "; exception during killing the task: " + e.toString());
         }
+    }
+
+    public ArrayList<Task> getAllTasksInfo(){
+        return new ArrayList<Task>(this.repository.getRepository().values());
     }
 
     public void deleteTask(UUID uuid){

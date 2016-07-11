@@ -42,7 +42,9 @@ public class GetServlet extends BaseServlet{
             LOGGER.info(this.service.getTaskInfo(uuid).toString());
             PrintWriter printWriter = resp.getWriter();
             printWriter.println(this.service.getTaskInfo(uuid).toString());
+        } else {
+            PrintWriter printWriter = resp.getWriter();
+            printWriter.println(this.service.getAllTasksInfo());
         }
-
     }
 }
