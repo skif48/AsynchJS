@@ -7,6 +7,6 @@ import java.util.Map;
  */
 public class Main {
     public static void main(String[] args) {
-        Map<String, String> map = ServletTools.getParamValueMap("localhost:8080/vlados/home?test=15&some=asd/?shit=shit");
+        Map<String, String> map = ServletTools.getParamValueMap("localhost:8080/vlados/home?test=15&some=asd");
     }
 }

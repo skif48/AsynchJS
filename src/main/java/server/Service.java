@@ -1,7 +1,8 @@
 package server;
 
 import engine.JSInterpreter;
-import engine.TransferData;
+import engine.JSThreadsListener;
+import engine.TaskTransferData;
 import tools.Tools;
 
 import javax.script.ScriptException;
@@ -12,63 +13,57 @@ import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 
 /**
- * Created by Vladyslav Usenko on 18.06.2016.
+ * Created by Vladyslav Usenko on 10.07.2016.
  */
-public enum Service {
-    INSTANCE;
-
+public class Service implements Listener{
     private final Logger LOGGER = Logger.getLogger(Service.class.getName());
     private final String LOG_FILE = "E:/[AsynchJS]ServiceLOG.log";
 
     private final Repository repository;
     private final LinkedBlockingQueue<Task> queue;
     private final ExecutorService executorService;
-    private final ConcurrentHashMap<UUID, Future<TransferData>> uuidFutureConcurrentHashMap;
+    private final ConcurrentHashMap<UUID, Future<TaskTransferData>> uuidFutureConcurrentHashMap;
+    private JSThreadsListener jsThreadsListener;
 
-    Service() {
-        this.repository = new Repository();
-        this.queue = new LinkedBlockingQueue<Task>();
+    public Service(Repository repository, LinkedBlockingQueue<Task> queue, ConcurrentHashMap<UUID, Future<TaskTransferData>> uuidFutureConcurrentHashMap) {
+        this.repository = repository;
+        this.queue = queue;
         this.executorService = Executors.newCachedThreadPool();
-        this.uuidFutureConcurrentHashMap = new ConcurrentHashMap<UUID, Future<TransferData>>();
+        this.uuidFutureConcurrentHashMap = uuidFutureConcurrentHashMap;
+        this.jsThreadsListener = new JSThreadsListener(new ConcurrentHashMap<UUID, Future<TaskTransferData>>(), this);
+
+        init();
+    }
+
+    private void init(){
         try {
             Tools.loggerInit(new FileHandler(), LOG_FILE, LOGGER);
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        LOGGER.info("setting up threads listener...");
+        executorService.submit(jsThreadsListener);
     }
 
     public void manageTask(String javascript, UUID uuid, int timeout){
-        LOGGER.info("MANAGE TASK");
+        LOGGER.info("task: " + uuid.toString() + "; entering service...");
         this.repository.putTask(new Task(javascript, uuid, timeout));
         try{
             JSInterpreter.preCompileJS(javascript);
         } catch (ScriptException exc){
-            LOGGER.info("Script exception occurred with " + uuid.toString() + ": " + exc.getMessage());
+            LOGGER.info("script exception occurred with " + uuid.toString() + ": " + exc.getMessage());
             this.repository.setCompleted(uuid);
         }
         queue.add(new Task(javascript, uuid, timeout));
+        LOGGER.info("task: " + uuid.toString() + "; sending for execution...");
         runTask(new Task(javascript, uuid, timeout));
     }
 
     private void runTask(Task task){
-        LOGGER.info(task.getUuid() + " started running");
-        Future<TransferData> future = executorService.submit(new JSInterpreter(new Task(task)));
-        uuidFutureConcurrentHashMap.put(task.getUuid(), future);
-        for(;;){
-            if(future.isDone()){
-                LOGGER.info("FUTURE IS DONE: " + future.isDone());
-                try {
-                    TransferData transferData = future.get();
-                    this.repository.getTask(task.getUuid()).setStatus(Task.Status.COMPLETED);
-                    this.repository.getTask(task.getUuid()).setConsoleOutput(transferData.getConsoleOutput());
-                    this.repository.getTask(task.getUuid()).setException(transferData.getException());
-                    break;
-                } catch (Exception e){
-                    LOGGER.info(e.toString());
-                    break;
-                }
-            }
-        }
+        Future<TaskTransferData> future = executorService.submit(new JSInterpreter(new Task(task)));
+        this.repository.setRunning(task.getUuid());
+        this.jsThreadsListener.addFuture(future, task.getUuid());
     }
 
     public Task getTaskInfo(UUID uuid){
@@ -77,5 +72,9 @@ public enum Service {
 
     public Repository getRepository() {
         return repository;
+    }
+
+    public void onListen(TaskTransferData taskTransferData) {
+        this.repository.getTask(taskTransferData.getUuid()).getDataFromTaskTransferData(taskTransferData);
     }
 }

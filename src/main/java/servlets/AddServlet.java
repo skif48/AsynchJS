@@ -22,7 +22,7 @@ public class AddServlet extends BaseServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Tools.loggerInit(new FileHandler(), LOG_FILE, LOGGER);
-        LOGGER.info("Service:" + this.service.toString());
+        LOGGER.info("ServiceSingleton:" + this.service.toString());
 
         LOGGER.info("POST method invoked");
         String URI = ServletTools.getFullURL(req);

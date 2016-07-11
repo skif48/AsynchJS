@@ -17,7 +17,7 @@ import java.util.logging.Logger;
 /**
  * Created by Vladyslav Usenko on 29.06.2016.
  */
-public class JSInterpreter implements Callable<TransferData>{
+public class JSInterpreter implements Callable<TaskTransferData>{
     private static final Logger LOGGER = Logger.getLogger(JSInterpreter.class.getName());
     private static final String LOG_FILE = "E:/[AsynchJS]JSInterpreter.log";
     public static final ScriptEngineManager SCRIPT_ENGINE_MANAGER = new ScriptEngineManager();
@@ -34,20 +34,21 @@ public class JSInterpreter implements Callable<TransferData>{
         }
     }
 
-    public TransferData call() throws Exception {
-        TransferData transferData = new TransferData("", task.getUuid(), null);
+    public TaskTransferData call() throws Exception {
+        TaskTransferData taskTransferData = new TaskTransferData("", task.getUuid(), null, Task.Status.RUNNING);
         try {
             LOGGER.info("Interpreter started with task " + task.getUuid());
             ScriptEngine engine = getScriptEngine();
             StringWriter sw = new StringWriter();
             engine.getContext().setWriter(sw);
             engine.eval(new StringReader(javascript));
-            transferData = new TransferData(sw.toString(), task.getUuid(), null);
+            taskTransferData = new TaskTransferData(sw.toString(), task.getUuid(), null, Task.Status.COMPLETED);
         } catch (Exception e) {
-            transferData.setException(e);
+            taskTransferData.setException(e);
         }
         LOGGER.info("Interpreter finished with task " + task.getUuid());
-        return transferData;
+        LOGGER.info(taskTransferData.toString());
+        return taskTransferData;
     }
 
     public static void preCompileJS(String javascript) throws ScriptException {

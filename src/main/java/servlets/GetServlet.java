@@ -23,7 +23,7 @@ public class GetServlet extends BaseServlet{
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Tools.loggerInit(new FileHandler(), LOG_FILE, LOGGER);
-        LOGGER.info("Service:" + this.service.toString());
+        LOGGER.info("ServiceSingleton:" + this.service.toString());
 
         LOGGER.info("GET method invoked");
         String URI = ServletTools.getFullURL(req);

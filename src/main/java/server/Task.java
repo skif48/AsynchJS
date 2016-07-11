@@ -1,5 +1,7 @@
 package server;
 
+import engine.TaskTransferData;
+
 import java.util.UUID;
 import java.util.logging.Logger;
 
@@ -32,7 +34,6 @@ public class Task {
     }
 
     public Task(Task task) {
-        LOGGER.info("Task constructor");
         LOGGER.info(task.toString());
         this.javascript = task.getJavascript();
         this.uuid = task.getUuid();
@@ -41,6 +42,12 @@ public class Task {
         this.timeout = task.getTimeout();
         this.exception = task.getException();
         this.consoleOutput = task.getConsoleOutput();
+    }
+
+    public void getDataFromTaskTransferData(TaskTransferData taskTransferData){
+        setConsoleOutput(taskTransferData.getConsoleOutput());
+        setException(taskTransferData.getException());
+        setStatus(taskTransferData.getStatus());
     }
 
     public String getConsoleOutput() {
