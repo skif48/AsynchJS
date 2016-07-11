@@ -62,6 +62,7 @@ public class Service implements Listener{
 
     private void runTask(Task task){
         Future<TaskTransferData> future = executorService.submit(new JSInterpreter(new Task(task)));
+        uuidFutureConcurrentHashMap.put(task.getUuid(), future);
         this.repository.setRunning(task.getUuid());
         this.jsThreadsListener.addFuture(future, task.getUuid());
     }
@@ -72,6 +73,15 @@ public class Service implements Listener{
 
     public Repository getRepository() {
         return repository;
+    }
+
+    public void killTask(UUID uuid){
+        LOGGER.info("task: " + uuid.toString() + "; killing execution...");
+        try {
+            this.uuidFutureConcurrentHashMap.get(uuid).cancel(true);
+        } catch (Exception e){
+            LOGGER.info("task: " + uuid.toString() + "; exception during killing the task: " + e.toString());
+        }
     }
 
     public void onListen(TaskTransferData taskTransferData) {

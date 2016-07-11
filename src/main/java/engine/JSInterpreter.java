@@ -37,7 +37,7 @@ public class JSInterpreter implements Callable<TaskTransferData>{
     public TaskTransferData call() throws Exception {
         TaskTransferData taskTransferData = new TaskTransferData("", task.getUuid(), null, Task.Status.RUNNING);
         try {
-            LOGGER.info("Interpreter started with task " + task.getUuid());
+            LOGGER.info("task: " + task.getUuid()+ "; interpreter started");
             ScriptEngine engine = getScriptEngine();
             StringWriter sw = new StringWriter();
             engine.getContext().setWriter(sw);
@@ -46,7 +46,7 @@ public class JSInterpreter implements Callable<TaskTransferData>{
         } catch (Exception e) {
             taskTransferData.setException(e);
         }
-        LOGGER.info("Interpreter finished with task " + task.getUuid());
+        LOGGER.info("task: " + task.getUuid()+ "; interpreter finished");
         LOGGER.info(taskTransferData.toString());
         return taskTransferData;
     }

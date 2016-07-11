@@ -30,7 +30,6 @@ public class AddServlet extends BaseServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        LOGGER.info("ServiceSingleton:" + this.service.toString());
         LOGGER.info("POST method invoked");
         String URI = ServletTools.getFullURL(req);
         HashMap<String, String> paramValHashMap = (HashMap<String, String>) ServletTools.getParamValueMap(URI);

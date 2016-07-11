@@ -32,7 +32,6 @@ public class HomeServlet extends BaseServlet {
         Tools.loggerInit(new FileHandler(), LOG_FILE, LOGGER);
 
         LOGGER.info("GET method invoked");
-        LOGGER.info("ServiceSingleton:" + this.service.toString());
         String URI = ServletTools.getFullURL(req);
         LOGGER.info(URI);
         HashMap<String, String> paramValHashMap = (HashMap<String, String>) ServletTools.getParamValueMap(URI);

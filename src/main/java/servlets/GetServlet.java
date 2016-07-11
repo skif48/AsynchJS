@@ -31,8 +31,6 @@ public class GetServlet extends BaseServlet{
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        LOGGER.info("ServiceSingleton:" + this.service.toString());
-
         LOGGER.info("GET method invoked");
         String URI = ServletTools.getFullURL(req);
         LOGGER.info(URI);

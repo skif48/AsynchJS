@@ -1,5 +1,6 @@
 package servlets;
 
+import tools.ServletTools;
 import tools.Tools;
 
 import javax.servlet.ServletException;
@@ -16,7 +17,6 @@ public class DeleteServlet extends BaseServlet{
     private static final Logger LOGGER = Logger.getLogger(DeleteServlet.class.getName());
     private static final String LOG_FILE = "E:/[AsynchJS]DeleteServletLOG.log";
 
-
     @Override
     public void init() throws ServletException {
         try {
@@ -28,7 +28,6 @@ public class DeleteServlet extends BaseServlet{
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
 
     }
 }
