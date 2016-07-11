@@ -19,6 +19,15 @@ public class HomeServlet extends BaseServlet {
     private static final String LOG_FILE = "E:/[AsynchJS]HomeServletLOG.log";
 
     @Override
+    public void init() throws ServletException {
+        try {
+            Tools.loggerInit(new FileHandler(), LOG_FILE, LOGGER);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Tools.loggerInit(new FileHandler(), LOG_FILE, LOGGER);
 

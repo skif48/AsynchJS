@@ -9,8 +9,6 @@ import java.util.logging.Logger;
  * Created by Vladyslav Usenko on 18.06.2016.
  */
 public class Task {
-    private static final Logger LOGGER = Logger.getLogger(Task.class.getName());
-
     private String javascript;
     private UUID uuid;
     private long instanceTime = System.currentTimeMillis();
@@ -34,7 +32,6 @@ public class Task {
     }
 
     public Task(Task task) {
-        LOGGER.info(task.toString());
         this.javascript = task.getJavascript();
         this.uuid = task.getUuid();
         this.instanceTime = task.instanceTime;

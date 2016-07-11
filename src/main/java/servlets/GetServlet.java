@@ -21,8 +21,16 @@ public class GetServlet extends BaseServlet{
     private static final String LOG_FILE = "E:/[AsynchJS]GetServletLOG.log";
 
     @Override
+    public void init() throws ServletException {
+        try {
+            Tools.loggerInit(new FileHandler(), LOG_FILE, LOGGER);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Tools.loggerInit(new FileHandler(), LOG_FILE, LOGGER);
         LOGGER.info("ServiceSingleton:" + this.service.toString());
 
         LOGGER.info("GET method invoked");
